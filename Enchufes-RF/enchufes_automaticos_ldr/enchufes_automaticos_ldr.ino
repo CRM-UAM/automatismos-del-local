@@ -35,9 +35,38 @@ void setup() {
   
 }
 
-void loop() {
+int enchufes_ON = true;
+
+void enciendeTodo() {
+  mySwitch.send(SW_1_ON, 24);
+  delay(100);
   mySwitch.send(SW_2_ON, 24);
-  delay(1000);  
+  delay(100);
+  mySwitch.send(SW_3_ON, 24);
+  delay(100);
+  enchufes_ON = true;
+}
+
+void apagaTodo() {
+  mySwitch.send(SW_1_OFF, 24);
+  delay(100);
   mySwitch.send(SW_2_OFF, 24);
+  delay(100);
+  mySwitch.send(SW_3_OFF, 24);
+  delay(100);
+  enchufes_ON = false;
+}
+
+int hayLuz() {
+  return (analogRead(A0) > 500);
+}
+
+void loop() {
+  if(enchufes_ON == false && hayLuz()) {
+    enciendeTodo();
+  } else if(enchufes_ON == true && !hayLuz()) {
+    delay(5000);
+    if(!hayLuz()) apagaTodo();
+  }
   delay(1000);
 }
