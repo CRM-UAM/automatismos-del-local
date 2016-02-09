@@ -20,7 +20,7 @@ RCSwitch mySwitch = RCSwitch();
 
 void setup() {
 
-  Serial.begin(9600);
+  Serial.begin(19200);
   
   // Transmitter is connected to Arduino Pin #10  
   mySwitch.enableTransmit(10);
@@ -58,14 +58,15 @@ void apagaTodo() {
 }
 
 int hayLuz() {
-  return (analogRead(A0) > 500);
+  return (analogRead(A0) > 450);
 }
 
 void loop() {
+  Serial.println(analogRead(A0));
   if(enchufes_ON == false && hayLuz()) {
     enciendeTodo();
   } else if(enchufes_ON == true && !hayLuz()) {
-    delay(5000);
+    delay(3000);
     if(!hayLuz()) apagaTodo();
   }
   delay(1000);
