@@ -1,4 +1,4 @@
-# Desagues musicales
+# Desagües musicales
 
 Desarrollado por [CarlosGS](https://github.com/CarlosGS) con la Raspberry Pi de [Víctor Uceda](https://github.com/VictorUceda)
 
