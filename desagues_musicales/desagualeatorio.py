@@ -48,8 +48,20 @@ musica_de_bienvenida = glob.glob('./musica_de_bienvenida/*.ogg')
 print(str(len(lista_sonidos)) + " sonidos disponibles")
 print(str(len(lista_musica)) + " melodias disponibles")
 
+display_izquierdo.set_text("load . . .")
+display_derecho.set_text("load . . .")
+
 print("Cargando sonidos en memoria...")
-sonidos = [pygame.mixer.Sound(fichero) for fichero in lista_sonidos]#[1:10]]
+sonidos = []
+N = len(lista_sonidos)
+i = 0
+for fichero in lista_sonidos:
+    sonidos.append(pygame.mixer.Sound(fichero))
+    progreso = float(i)/float(N-1)
+    N_leds = int(progreso * 16)
+    display_izquierdo.enciende_n_leds(LED_COLOR_GREEN, N_leds)
+    display_derecho.enciende_n_leds(LED_COLOR_GREEN, N_leds-8)
+    i += 1
 print("OK")
 
 

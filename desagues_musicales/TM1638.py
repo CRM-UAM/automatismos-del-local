@@ -105,11 +105,12 @@ class TM1638(object):
         self.send_char(pos, self.FONT[digit], dot)
 
     def set_text(self, text):
-        text += " "*(8-len(text))
+        text += " "*(8)
         nDots = 0
         for i in range(len(text)):
             c = text[i]
             if c == ' ':
+                if i-nDots > 7: break
                 self.send_char(i-nDots, 0)
             else:
                 if c == ',' or c == '.':
@@ -152,6 +153,13 @@ class TM1638(object):
             else:
                 self.color_leds(0)
             time.sleep(delay)
+
+    def enciende_n_leds(self, color, n = 8):
+        for i in range(8):
+            if i < n:
+                self.set_led(i, color)
+            else:
+                self.set_led(i, 0)
 
     def set_text_centered(self, text): # does NOT take into account '.' characters
         text = text.center(8)
