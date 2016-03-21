@@ -55,7 +55,7 @@ print("Cargando sonidos en memoria...")
 sonidos = []
 N = len(lista_sonidos)
 i = 0
-for fichero in lista_sonidos:
+for fichero in lista_sonidos:#[1:10]:
     sonidos.append(pygame.mixer.Sound(fichero))
     progreso = float(i)/float(N-1)
     N_leds = int(progreso * 16)
@@ -81,8 +81,8 @@ def reproducir_musica(fichero):
         del musica
         musica = None
     musica = pygame.mixer.Sound(fichero)
-    while reproduciendo(canal_musica) or reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho):
-        time.sleep(0.1)
+    #while reproduciendo(canal_musica) or reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho):
+    #    time.sleep(0.1)
     canal_musica.play(musica)
 
 

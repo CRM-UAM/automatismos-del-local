@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SERVICE="run_desagualeatorio.sh"
+SERVICE="python"
 RESULT=`ps -a | sed -n /${SERVICE}/p`
 
 if [ "${RESULT:-null}" = null ]; then
