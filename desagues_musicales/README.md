@@ -23,7 +23,7 @@ run_desagualeatorio.sh &
 Origen de los sonidos
 --
 
-Los audios han sido obtenidos de <http://www.instantsfun.es/>
+Los audios han sido obtenidos de <http://www.instantsfun.es/> y <http://github.com/Diogenesthecynic/FullScreenMario/>
 
 El volumen de los .ogg fue normalizado con:
 ```
