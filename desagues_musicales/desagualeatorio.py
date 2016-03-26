@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-DEBUG = True
+DEBUG = False
 
 import time
 import pygame
@@ -35,11 +35,15 @@ volumen_musica = 0.9
 
 PIN_MIC_DERECHA = 23
 PIN_MIC_IZQUIERDA = 24
+PIN_SENSOR_LUZ = 18
+PIN_MUTE = 2
 
 if not DEBUG:
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(PIN_MIC_DERECHA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(PIN_MIC_IZQUIERDA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(PIN_SENSOR_LUZ, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    GPIO.setup(PIN_MUTE, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 pygame.init()
@@ -127,11 +131,11 @@ def actualiza_contador(L,R):
     contador_derecho += R
     if DEBUG: return
     if L > 0:
-        color = LED_COLOR_GREEN
+        color = LED_COLOR_RED
         count = contador_izquierdo
         display = display_izquierdo
     if R > 0:
-        color = LED_COLOR_RED
+        color = LED_COLOR_GREEN
         count = contador_derecho
         display = display_derecho
     display.set_text_centered(str(count))
@@ -154,9 +158,10 @@ def set_panning_musica(filtrado = False):
 
 def hay_luz(): # TO-DO: incorporar sensor de luz
     if DEBUG: return False
-    
-    return WTF
+    return GPIO.input(PIN_SENSOR_LUZ)
 
+def pulsado_boton_mute():
+    return not GPIO.input(PIN_MUTE)
 
 random.seed()
 
@@ -175,14 +180,17 @@ def bienvenida():
         display_izquierdo.set_text_centered("hola")
         display_derecho.set_text_centered("hello")
 
-    cargar_musica("./sonidos/portal_turret_salute.ogg")
-    reproducir_musica()
-
+    hello = pygame.mixer.Sound("./sonidos/portal_turret_salute.ogg")
+    canal_musica.play(hello)
+    del hello
     canal_musica.set_volume(volumen_efectos, 0)
+
+    time.sleep(0.4)
+
     if not DEBUG:
         display_izquierdo.parpadea(LED_COLOR_ORANGE)
 
-    time.sleep(1.1)
+    time.sleep(0.3)
 
     canal_musica.set_volume(0, volumen_efectos)
     if not DEBUG:
@@ -191,8 +199,6 @@ def bienvenida():
 
     MUSICA_DE_BIENVENIDA = True
     if MUSICA_DE_BIENVENIDA:
-        fichero = random.choice(musica_de_bienvenida)
-        cargar_musica(fichero)
         while reproduciendo(canal_musica):
             time.sleep(0.1)
         reproducir_musica()
@@ -203,12 +209,12 @@ def bienvenida():
         time.sleep(6)
     else:
         colors = [LED_COLOR_RED, LED_COLOR_GREEN, LED_COLOR_ORANGE]
-        for i in range(3):
-            display_izquierdo.parpadea(colors[i], n=4, delay=0.25)
-            display_derecho.parpadea(colors[i], n=4, delay=0.25)
+        for i in range(20):
+            display_izquierdo.parpadea(colors[i%3], n=3, delay=0.1)
+            display_derecho.parpadea(colors[(i+1)%3], n=3, delay=0.1)
         display_izquierdo.set_text_centered("start")
         display_derecho.set_text_centered("start")
-        display_izquierdo.color_leds(LED_COLOR_GREEN)
+        display_izquierdo.color_leds(LED_COLOR_RED)
         display_derecho.color_leds(LED_COLOR_GREEN)
 
     contador_izquierdo = 0
@@ -223,10 +229,11 @@ def bienvenida():
 def adios():
     global hay_gente
 
-    cargar_musica("./sonidos/portal_turret.ogg")
-    reproducir_musica()
+    iDontHateYou = pygame.mixer.Sound("./sonidos/portal_turret.ogg")
+    canal_musica.play(iDontHateYou)
+    del iDontHateYou
     canal_musica.set_volume(volumen_efectos, volumen_efectos)
-    time.sleep(3)
+    time.sleep(4)
 
     if hay_luz(): return
     hay_gente = False
@@ -249,6 +256,13 @@ def adios():
         display_izquierdo.color_leds(0)
         display_derecho.color_leds(0)
 
+    fichero = random.choice(musica_de_bienvenida)
+    cargar_musica(fichero)
+    poner_cancion = False
+
+
+fichero = random.choice(musica_de_bienvenida)
+cargar_musica(fichero)
 
 bienvenida()
 
@@ -274,6 +288,8 @@ while True:
             bienvenida()
         if not hay_luz() and hay_gente:
             adios()
+        if pulsado_boton_mute():
+            volumen_musica = 0
     
     set_panning_musica(filtrado = True)
     time.sleep(0.3)
