@@ -177,8 +177,8 @@ def bienvenida():
     if not DEBUG:
         display_derecho.enable(6)
         display_izquierdo.enable(6)
-        display_izquierdo.set_text_centered("hola")
-        display_derecho.set_text_centered("hello")
+        display_izquierdo.set_text_centered("hello")
+        display_derecho.set_text_centered("hola")
 
     hello = pygame.mixer.Sound("./sonidos/portal_turret_salute.ogg")
     canal_musica.play(hello)
@@ -228,6 +228,7 @@ def bienvenida():
 
 def adios():
     global hay_gente
+    hay_gente = False # deshabilita las interrupciones
 
     iDontHateYou = pygame.mixer.Sound("./sonidos/portal_turret.ogg")
     canal_musica.play(iDontHateYou)
@@ -235,8 +236,9 @@ def adios():
     canal_musica.set_volume(volumen_efectos, volumen_efectos)
     time.sleep(4)
 
-    if hay_luz(): return
-    hay_gente = False
+    if hay_luz(): # cancela la desconexion si todavia hay luz
+        hay_gente = True
+        return
 
     if not DEBUG:
         display_izquierdo.set_text_centered("hasta")
@@ -258,7 +260,6 @@ def adios():
 
     fichero = random.choice(musica_de_bienvenida)
     cargar_musica(fichero)
-    poner_cancion = False
 
 
 fichero = random.choice(musica_de_bienvenida)
@@ -299,7 +300,7 @@ while True:
             canal_musica.stop()
     else:
         volumen_musica = volumen_backup
-    if poner_cancion:
+    if poner_cancion and hay_gente:
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
             reproducir_musica()
             set_panning_musica()
