@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-DEBUG = True
+DEBUG = False
 
 import time
 import pygame
@@ -21,11 +21,13 @@ LED_COLOR_RED = 1
 LED_COLOR_GREEN = 2
 LED_COLOR_ORANGE = 3
 
+INTENSITY = 7
+
 if not DEBUG:
     display_derecho = TM1638.TM1638(DIO, CLK, STB_derecho)
     display_izquierdo = TM1638.TM1638(DIO, CLK, STB_izquierdo)
-    display_derecho.enable(6)
-    display_izquierdo.enable(6)
+    display_derecho.enable(INTENSITY)
+    display_izquierdo.enable(INTENSITY)
 
 
 
@@ -108,16 +110,16 @@ def sht_detected(io):
     #print(io)
     poner_cancion = True
     if io == PIN_MIC_DERECHA:
-        if not reproduciendo(canal_musica) or panning_musica >= 0.8:
-            panning_musica = 0.1
+        if not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5:
+            panning_musica = 0.05
             if not reproduciendo(canal_derecho):
                     sound = random.choice(sonidos)
                     canal_derecho.play(sound)
                     canal_derecho.set_volume(0, volumen_efectos)
         actualiza_contador(0,1)
     elif io == PIN_MIC_IZQUIERDA:
-        if not reproduciendo(canal_musica) or panning_musica <= 0.2:
-            panning_musica = 0.9
+        if not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5:
+            panning_musica = 0.95
             if not reproduciendo(canal_izquierdo):
                 sound = random.choice(sonidos)
                 canal_izquierdo.play(sound)
@@ -142,6 +144,7 @@ def actualiza_contador(L,R):
         color = LED_COLOR_GREEN
         count = contador_derecho
         display = display_derecho
+    display.enable(INTENSITY)
     display.set_text_centered(str(count))
     display.parpadea(color)
 
@@ -151,7 +154,7 @@ def set_panning_musica(filtrado = False):
     global panning_musica_filtrado, canal_musica, volumen_musica_filtrado
     if filtrado:
         panning_musica_filtrado = panning_musica_filtrado * 0.9 + panning_musica * 0.1
-        volumen_musica_filtrado = volumen_musica_filtrado * 0.7 + volumen_musica * 0.3
+        volumen_musica_filtrado = volumen_musica_filtrado * 0.8 + volumen_musica * 0.2
     else:
         panning_musica_filtrado = panning_musica
         volumen_musica_filtrado = volumen_musica
@@ -180,8 +183,8 @@ dando_bienvenida = False
 def bienvenida():
     global hay_gente, contador_derecho, contador_izquierdo, panning_musica, dando_bienvenida
     if not DEBUG:
-        display_derecho.enable(6)
-        display_izquierdo.enable(6)
+        display_derecho.enable(INTENSITY)
+        display_izquierdo.enable(INTENSITY)
         display_izquierdo.set_text_centered("hello")
         display_derecho.set_text_centered("hola")
 
@@ -195,9 +198,10 @@ def bienvenida():
     if not DEBUG:
         display_izquierdo.parpadea(LED_COLOR_ORANGE)
 
-    time.sleep(0.28)
-
+    time.sleep(0.2)
     canal_musica.set_volume(0, volumen_efectos)
+    
+    time.sleep(0.4)
     if not DEBUG:
         display_derecho.parpadea(LED_COLOR_ORANGE)
 
@@ -206,6 +210,7 @@ def bienvenida():
     if MUSICA_DE_BIENVENIDA:
         while reproduciendo(canal_musica):
             time.sleep(0.1)
+        time.sleep(0.5)
         reproducir_musica()
         panning_musica = 0.5
         set_panning_musica()
@@ -302,13 +307,13 @@ while True:
     time.sleep(0.1)
     
     tiempo_ultima = segundos_desde_ultima_deteccion()
-    if tiempo_ultima > 15 and not dando_bienvenida: # auto-mute si no se detecta nada en X segundos
+    if tiempo_ultima > 10 and not dando_bienvenida: # auto-mute si no se detecta nada en X segundos
         volumen_musica = 0
         poner_cancion = False
     
     if reproduciendo(canal_musica):
         poner_cancion = False
-        if volumen_musica_filtrado < 0.1:
+        if volumen_musica_filtrado < 0.01:
             canal_musica.stop()
     else:
         volumen_musica = volumen_backup
