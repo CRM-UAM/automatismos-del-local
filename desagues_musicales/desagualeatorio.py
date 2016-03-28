@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-DEBUG = False
+DEBUG = True
 
 import time
 import pygame
@@ -99,9 +99,11 @@ def cargar_musica(fichero):
 def reproducir_musica():
     canal_musica.play(musica)
 
+last_time = time.time()
 poner_cancion = False
 def sht_detected(io):
-    global canal_izquierdo, canal_derecho, canal_musica, panning_musica, poner_cancion, hay_gente
+    global canal_izquierdo, canal_derecho, canal_musica, panning_musica, poner_cancion, hay_gente, last_time
+    last_time = time.time()
     if not hay_gente: return
     #print(io)
     poner_cancion = True
@@ -122,6 +124,8 @@ def sht_detected(io):
                 canal_izquierdo.set_volume(volumen_efectos, 0)
         actualiza_contador(1,0)
 
+def segundos_desde_ultima_deteccion():
+    return time.time()-last_time
 
 contador_izquierdo = 0
 contador_derecho = 0
@@ -146,8 +150,8 @@ volumen_musica_filtrado = volumen_musica
 def set_panning_musica(filtrado = False):
     global panning_musica_filtrado, canal_musica, volumen_musica_filtrado
     if filtrado:
-        panning_musica_filtrado = panning_musica_filtrado * 0.8 + panning_musica * 0.2
-        volumen_musica_filtrado = volumen_musica_filtrado * 0.6 + volumen_musica * 0.4
+        panning_musica_filtrado = panning_musica_filtrado * 0.9 + panning_musica * 0.1
+        volumen_musica_filtrado = volumen_musica_filtrado * 0.7 + volumen_musica * 0.3
     else:
         panning_musica_filtrado = panning_musica
         volumen_musica_filtrado = volumen_musica
@@ -172,8 +176,9 @@ if not DEBUG:
     GPIO.add_event_detect(PIN_MIC_IZQUIERDA, GPIO.RISING, callback=sht_detected, bouncetime=500)
 
 
+dando_bienvenida = False
 def bienvenida():
-    global hay_gente, contador_derecho, contador_izquierdo, panning_musica
+    global hay_gente, contador_derecho, contador_izquierdo, panning_musica, dando_bienvenida
     if not DEBUG:
         display_derecho.enable(6)
         display_izquierdo.enable(6)
@@ -190,7 +195,7 @@ def bienvenida():
     if not DEBUG:
         display_izquierdo.parpadea(LED_COLOR_ORANGE)
 
-    time.sleep(0.3)
+    time.sleep(0.28)
 
     canal_musica.set_volume(0, volumen_efectos)
     if not DEBUG:
@@ -224,6 +229,7 @@ def bienvenida():
     cargar_musica(fichero)
 
     hay_gente = True
+    dando_bienvenida = True
 
 
 def adios():
@@ -293,14 +299,22 @@ while True:
             volumen_musica = 0
     
     set_panning_musica(filtrado = True)
-    time.sleep(0.3)
+    time.sleep(0.1)
+    
+    tiempo_ultima = segundos_desde_ultima_deteccion()
+    if tiempo_ultima > 15 and not dando_bienvenida: # auto-mute si no se detecta nada en X segundos
+        volumen_musica = 0
+        poner_cancion = False
+    
     if reproduciendo(canal_musica):
         poner_cancion = False
         if volumen_musica_filtrado < 0.1:
             canal_musica.stop()
     else:
         volumen_musica = volumen_backup
-    if poner_cancion and hay_gente:
+        dando_bienvenida = False
+    
+    if poner_cancion and hay_gente and tiempo_ultima < 1:
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
             reproducir_musica()
             set_panning_musica()
