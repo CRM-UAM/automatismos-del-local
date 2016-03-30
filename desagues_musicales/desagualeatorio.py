@@ -11,7 +11,6 @@ if not DEBUG:
     import RPi.GPIO as GPIO
     import TM1638
 
-
 DIO = 17
 CLK = 27
 STB_derecho = 25
@@ -37,8 +36,8 @@ volumen_musica = 0.9
 
 PIN_MIC_DERECHA = 23
 PIN_MIC_IZQUIERDA = 24
-PIN_SENSOR_LUZ = 18
-PIN_MUTE = 2
+PIN_SENSOR_LUZ = 4
+PIN_MUTE = 18
 
 if not DEBUG:
     GPIO.setmode(GPIO.BCM)
@@ -102,14 +101,30 @@ def reproducir_musica():
     canal_musica.play(musica)
 
 last_time = time.time()
+
+def segundos_desde_ultima_deteccion():
+    return time.time()-last_time
+
+tiempo_inicio_izquierda = time.time()
+tiempo_inicio_derecha = time.time()
+ultimo_uso_displays = time.time()
+
 poner_cancion = False
 def sht_detected(io):
-    global canal_izquierdo, canal_derecho, canal_musica, panning_musica, poner_cancion, hay_gente, last_time
-    last_time = time.time()
+    global canal_izquierdo, canal_derecho, canal_musica, panning_musica, poner_cancion, hay_gente, last_time, tiempo_inicio_izquierda, tiempo_inicio_derecha
     if not hay_gente: return
-    #print(io)
-    poner_cancion = True
+    tiempo = time.time()
+    if (tiempo - ultimo_uso_displays) < 1.5: # ignorar medidas espureas causadas por interferencias con los displays
+        return
     if io == PIN_MIC_DERECHA:
+        segundos = (tiempo - tiempo_inicio_derecha)
+        if segundos > 1.5:
+            tiempo_inicio_derecha = last_time
+            return
+        if segundos < 1:
+            return
+        last_time = tiempo
+        poner_cancion = True
         if not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5:
             panning_musica = 0.05
             if not reproduciendo(canal_derecho):
@@ -118,6 +133,14 @@ def sht_detected(io):
                     canal_derecho.set_volume(0, volumen_efectos)
         actualiza_contador(0,1)
     elif io == PIN_MIC_IZQUIERDA:
+        segundos = (tiempo - tiempo_inicio_izquierda)
+        if segundos > 1.5:
+            tiempo_inicio_izquierda = last_time
+            return
+        if segundos < 1:
+            return
+        last_time = tiempo
+        poner_cancion = True
         if not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5:
             panning_musica = 0.95
             if not reproduciendo(canal_izquierdo):
@@ -126,13 +149,10 @@ def sht_detected(io):
                 canal_izquierdo.set_volume(volumen_efectos, 0)
         actualiza_contador(1,0)
 
-def segundos_desde_ultima_deteccion():
-    return time.time()-last_time
-
 contador_izquierdo = 0
 contador_derecho = 0
 def actualiza_contador(L,R):
-    global contador_izquierdo, contador_derecho
+    global contador_izquierdo, contador_derecho, ultimo_uso_displays
     contador_izquierdo += L
     contador_derecho += R
     if DEBUG: return
@@ -144,6 +164,7 @@ def actualiza_contador(L,R):
         color = LED_COLOR_GREEN
         count = contador_derecho
         display = display_derecho
+    ultimo_uso_displays = time.time()
     display.enable(INTENSITY)
     display.set_text_centered(str(count))
     display.parpadea(color)
@@ -163,9 +184,29 @@ def set_panning_musica(filtrado = False):
     canal_musica.set_volume(L,R)
 
 
+# from https://learn.adafruit.com/basic-resistor-sensor-reading-on-raspberry-pi/basic-photocell-reading#
+def RCtime (RCpin):
+        reading = 0
+        GPIO.setup(RCpin, GPIO.OUT)
+        GPIO.output(RCpin, GPIO.LOW)
+        time.sleep(0.1)
+        GPIO.setup(RCpin, GPIO.IN)
+        # This takes about 1 millisecond per loop cycle
+        while (GPIO.input(RCpin) == GPIO.LOW):
+                reading += 1
+                if reading > 2000:
+                    break
+        return reading
+
+
 def hay_luz(): # TO-DO: incorporar sensor de luz
     if DEBUG: return False
-    return GPIO.input(PIN_SENSOR_LUZ)
+    medida = RCtime(PIN_SENSOR_LUZ)
+    #print medida
+    if medida < 700:
+        return True
+    else:
+        return False
 
 def pulsado_boton_mute():
     return not GPIO.input(PIN_MUTE)
@@ -175,14 +216,15 @@ random.seed()
 hay_gente = False
 
 if not DEBUG:
-    GPIO.add_event_detect(PIN_MIC_DERECHA, GPIO.RISING, callback=sht_detected, bouncetime=500)
-    GPIO.add_event_detect(PIN_MIC_IZQUIERDA, GPIO.RISING, callback=sht_detected, bouncetime=500)
+    GPIO.add_event_detect(PIN_MIC_DERECHA, GPIO.RISING, callback=sht_detected, bouncetime=50)
+    GPIO.add_event_detect(PIN_MIC_IZQUIERDA, GPIO.RISING, callback=sht_detected, bouncetime=50)
 
 
 dando_bienvenida = False
 def bienvenida():
     global hay_gente, contador_derecho, contador_izquierdo, panning_musica, dando_bienvenida
     if not DEBUG:
+        ultimo_uso_displays = time.time()
         display_derecho.enable(INTENSITY)
         display_izquierdo.enable(INTENSITY)
         display_izquierdo.set_text_centered("hello")
@@ -191,7 +233,7 @@ def bienvenida():
     hello = pygame.mixer.Sound("./sonidos/portal_turret_salute.ogg")
     canal_musica.play(hello)
     del hello
-    canal_musica.set_volume(volumen_efectos, 0)
+    canal_musica.set_volume(1, 0.1)
 
     time.sleep(0.4)
 
@@ -199,7 +241,7 @@ def bienvenida():
         display_izquierdo.parpadea(LED_COLOR_ORANGE)
 
     time.sleep(0.2)
-    canal_musica.set_volume(0, volumen_efectos)
+    canal_musica.set_volume(0.1, 1)
     
     time.sleep(0.4)
     if not DEBUG:
@@ -215,13 +257,13 @@ def bienvenida():
         panning_musica = 0.5
         set_panning_musica()
 
-    if DEBUG:
-        time.sleep(6)
-    else:
+    if not DEBUG:
         colors = [LED_COLOR_RED, LED_COLOR_GREEN, LED_COLOR_ORANGE]
         for i in range(20):
+            ultimo_uso_displays = time.time()
             display_izquierdo.parpadea(colors[i%3], n=3, delay=0.1)
             display_derecho.parpadea(colors[(i+1)%3], n=3, delay=0.1)
+        ultimo_uso_displays = time.time()
         display_izquierdo.set_text_centered("start")
         display_derecho.set_text_centered("start")
         display_izquierdo.color_leds(LED_COLOR_RED)
@@ -252,6 +294,9 @@ def adios():
         return
 
     if not DEBUG:
+        ultimo_uso_displays = time.time()
+        display_derecho.enable(INTENSITY)
+        display_izquierdo.enable(INTENSITY)
         display_izquierdo.set_text_centered("hasta")
         display_derecho.set_text_centered("pronto")
 
@@ -264,6 +309,7 @@ def adios():
     time.sleep(5)
 
     if not DEBUG: # apagar los displays
+        ultimo_uso_displays = time.time()
         display_izquierdo.set_text_centered("")
         display_derecho.set_text_centered("")
         display_izquierdo.color_leds(0)
@@ -319,11 +365,12 @@ while True:
         volumen_musica = volumen_backup
         dando_bienvenida = False
     
-    if poner_cancion and hay_gente and tiempo_ultima < 1:
+    if poner_cancion and hay_gente and tiempo_ultima < 0.5:
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
             reproducir_musica()
             set_panning_musica()
             fichero = random.choice(lista_musica)
+            ultimo_uso_displays = time.time()+1
             cargar_musica(fichero)
 
 if not DEBUG:
