@@ -24,12 +24,29 @@ sonido = pygame.mixer.Sound("./sonidos/chan.ogg")
 canal_derecho = pygame.mixer.Channel(0)
 canal_izquierdo = pygame.mixer.Channel(1)
 
+tiempo_inicio_izquierda = time.time()
+tiempo_inicio_derecha = time.time()
+
 
 def sht_detected(io):
+    global tiempo_inicio_izquierda, tiempo_inicio_derecha
+    tiempo = time.time()
     if io == PIN_MIC_DERECHA:
+        segundos = (tiempo - tiempo_inicio_derecha)
+        if segundos > 1.5:
+            tiempo_inicio_derecha = tiempo
+            return
+        if segundos < 1:
+            return
         canal_derecho.play(sonido)
         canal_derecho.set_volume(0, 1)
     elif io == PIN_MIC_IZQUIERDA:
+        segundos = (tiempo - tiempo_inicio_izquierda)
+        if segundos > 1.5:
+            tiempo_inicio_izquierda = tiempo
+            return
+        if segundos < 1:
+            return
         canal_izquierdo.play(sonido)
         canal_izquierdo.set_volume(1, 0)
 

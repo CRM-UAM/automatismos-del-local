@@ -41,8 +41,8 @@ PIN_MUTE = 18
 
 if not DEBUG:
     GPIO.setmode(GPIO.BCM)
-    GPIO.setup(PIN_MIC_DERECHA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    GPIO.setup(PIN_MIC_IZQUIERDA, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(PIN_MIC_DERECHA, GPIO.IN)#, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.setup(PIN_MIC_IZQUIERDA, GPIO.IN)#, pull_up_down=GPIO.PUD_DOWN)
     GPIO.setup(PIN_SENSOR_LUZ, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(PIN_MUTE, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
@@ -119,7 +119,7 @@ def sht_detected(io):
     if io == PIN_MIC_DERECHA:
         segundos = (tiempo - tiempo_inicio_derecha)
         if segundos > 1.5:
-            tiempo_inicio_derecha = last_time
+            tiempo_inicio_derecha = tiempo
             return
         if segundos < 1:
             return
@@ -135,7 +135,7 @@ def sht_detected(io):
     elif io == PIN_MIC_IZQUIERDA:
         segundos = (tiempo - tiempo_inicio_izquierda)
         if segundos > 1.5:
-            tiempo_inicio_izquierda = last_time
+            tiempo_inicio_izquierda = tiempo
             return
         if segundos < 1:
             return
