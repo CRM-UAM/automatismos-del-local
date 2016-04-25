@@ -3,6 +3,10 @@
 Desarrollado por [CarlosGS](https://github.com/CarlosGS) con la Raspberry Pi de [Víctor Uceda](https://github.com/VictorUceda)
 
 
+Diagrama del circuito
+--
+![Imagen](diagrama.jpg)
+
 
 Configuración de la Raspberry
 --
