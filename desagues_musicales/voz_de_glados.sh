@@ -8,5 +8,5 @@ for b in $a; do
   echo -n "<prosody pitch=\"+$V\">$b</prosody> " |
     sed 's/+-/-/' 
 done
-done | espeak -ves+f3 -m -p 40 -s 180 -a 100
+done | espeak -ves+f3 -m -p 40 -s 180 -a 140 -w "voz.wav"
 

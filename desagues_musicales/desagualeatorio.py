@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-DEBUG = True
+DEBUG = False
 
 import time
 import pygame
@@ -13,6 +13,10 @@ random.seed()
 
 def decir(texto):
   subprocess.check_output(['./voz_de_glados.sh', str(texto)])
+  voz = pygame.mixer.Sound("voz.wav")
+  canal_musica.play(voz)
+  del voz
+  
 
 tiempo_inicio = time.time()
 tiempo_ultimo_mensaje = time.time()
@@ -25,7 +29,7 @@ bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Robótica y Mecatrónica!",
                "Hola ke ase. Ke te trae, entre mano mi shurmano <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!",
                "¡Eh! Cierra la puerta, que se escapa el gato <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!"]
 
-despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr> <hr> <hr> <hr> <hr> ¡Hasta pronto!",
+despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr> <hr> <hr> ¡Hasta pronto!",
                "¿Ya te vas? Si te ha gustado, dale a laik, fav y suscribete",
                "¿Ya te vas? Bueno, ya sabes que tu casa es mi casa, digo, tu casa. Bah, ¡es igual!",
                "¡Hasta pronto! Puedes volver cuando puedas, o quieras, o quieras y puedas, o cuando te salga del .",
@@ -79,7 +83,7 @@ if not DEBUG:
 
 
 
-volumen_efectos = 1
+volumen_efectos = 0.9
 volumen_musica = 1
 
 PIN_MIC_DERECHA = 23
@@ -115,7 +119,7 @@ print("Cargando sonidos en memoria...")
 sonidos = []
 N = len(lista_sonidos)
 i = 0
-for fichero in lista_sonidos[1:10]:
+for fichero in lista_sonidos:#[1:10]:
     sonidos.append(pygame.mixer.Sound(fichero))
     progreso = float(i)/float(N-1)
     N_leds = int(progreso * 16)
@@ -425,7 +429,7 @@ while True:
         if hay_gente and (time.time()-tiempo_ultimo_mensaje) > 20*60: # Cada 20 minutos
             tiempo_ultimo_mensaje = time.time()
             horas_activo = ((time.time()-tiempo_inicio)/60.)/60.
-            if horas_activo > 0.01 and deseo_de_palmera < 3:
+            if horas_activo > 2 and deseo_de_palmera < 3:
                 decir(msg_palmera[deseo_de_palmera])
                 deseo_de_palmera += 1
             elif random.random() > 0.9:
