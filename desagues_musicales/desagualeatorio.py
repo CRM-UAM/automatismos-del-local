@@ -31,7 +31,7 @@ if not DEBUG:
 
 
 
-volumen_efectos = 1.
+volumen_efectos = 0.9
 volumen_musica = 0.9
 
 PIN_MIC_DERECHA = 23
@@ -101,6 +101,10 @@ def reproducir_musica():
     canal_musica.play(musica)
 
 last_time = time.time()
+tiempo_ultima_cancion = last_time
+
+def se_hace_pesado():
+    return (time.time()-tiempo_ultima_cancion) < 60*10 # deshabilitar los efectos durante unos minutos tras una reproduccion larga
 
 def segundos_desde_ultima_deteccion():
     return time.time()-last_time
@@ -125,7 +129,7 @@ def sht_detected(io):
             return
         last_time = tiempo
         poner_cancion = True
-        if not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5:
+        if not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5 or not se_hace_pesado():
             panning_musica = 0.05
             if not reproduciendo(canal_derecho):
                     sound = random.choice(sonidos)
@@ -141,7 +145,7 @@ def sht_detected(io):
             return
         last_time = tiempo
         poner_cancion = True
-        if not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5:
+        if not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5 or not se_hace_pesado():
             panning_musica = 0.95
             if not reproduciendo(canal_izquierdo):
                 sound = random.choice(sonidos)
@@ -365,8 +369,9 @@ while True:
         volumen_musica = volumen_backup
         dando_bienvenida = False
     
-    if poner_cancion and hay_gente and tiempo_ultima < 1.5:
+    if poner_cancion and hay_gente and tiempo_ultima < 1.5 and not se_hace_pesado():
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
+            tiempo_ultima_cancion = time.time()
             reproducir_musica()
             set_panning_musica()
             fichero = random.choice(lista_musica)
