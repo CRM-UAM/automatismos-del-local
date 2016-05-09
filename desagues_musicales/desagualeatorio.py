@@ -13,9 +13,6 @@ random.seed()
 
 def decir(texto):
   subprocess.check_output(['./voz_de_glados.sh', str(texto)])
-  voz = pygame.mixer.Sound("voz.wav")
-  canal_musica.play(voz)
-  del voz
   
 
 tiempo_inicio = time.time()
@@ -342,6 +339,7 @@ def adios():
     global hay_gente
     hay_gente = False # deshabilita las interrupciones
     
+    if reproduciendo(canal_musica): canal_musica.stop()
     decir(random.choice(despedidas))
 
     #iDontHateYou = pygame.mixer.Sound("./sonidos/portal_turret.ogg")
