@@ -365,7 +365,7 @@ while True:
         volumen_musica = volumen_backup
         dando_bienvenida = False
     
-    if poner_cancion and hay_gente and tiempo_ultima < 0.5:
+    if poner_cancion and hay_gente and tiempo_ultima < 1.5:
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
             reproducir_musica()
             set_panning_musica()
