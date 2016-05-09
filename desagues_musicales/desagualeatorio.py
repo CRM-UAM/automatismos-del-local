@@ -1,11 +1,59 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-DEBUG = False
+DEBUG = True
 
 import time
 import pygame
 import glob
 import random
+import subprocess
+
+random.seed()
+
+def decir(texto):
+  subprocess.check_output(['./voz_de_glados.sh', str(texto)])
+
+tiempo_inicio = time.time()
+tiempo_ultimo_mensaje = time.time()
+
+bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Robótica y Mecatrónica!",
+               "¡Hola! ¡Bienvenidos al Club de Mecatrónica! Digo Robótica. Y mecatrónica también. Ay, por un trabajo que tengo, y haciéndolo mal ¡Menuda presentación! Lo solucionaré poniendo música",
+               "Bienvenidos al Club de Robótica <hr> ¡Música maestro!",
+               "Hola, ¿Qué tal va todo? ¡Bienvenidos al Club de Robótica!",
+               "Hola, cómo molas, te mereces una ola, uueeaaoo, ooaaeeuu ¡Bienvenido al Club de Robótica!",
+               "Hola ke ase. Ke te trae, entre mano mi shurmano <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!",
+               "¡Eh! Cierra la puerta, que se escapa el gato <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!"]
+
+despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr> <hr> <hr> <hr> <hr> ¡Hasta pronto!",
+               "¿Ya te vas? Si te ha gustado, dale a laik, fav y suscribete",
+               "¿Ya te vas? Bueno, ya sabes que tu casa es mi casa, digo, tu casa. Bah, ¡es igual!",
+               "¡Hasta pronto! Puedes volver cuando puedas, o quieras, o quieras y puedas, o cuando te salga del .",
+               "¡Nos vemos en el futuro! para tu desgracia, digo, para bien, será para bien",
+               "¡Espera! ¡No te vayas todavía! <hr> <hr> <hr> Era broma. Guiño, guiño. ¡Que vaya bien!"]
+
+msg_aleatorio = ["¿Qué tal va todo? ¿Puedo echarte una mano? <hr> Es broma, no tengo manos, tendrás que solucionarlo por tu cuenta. Pero te puedo dar ánimos. <hr> Ánimo! <hr> Tú puedes!",
+               "¿Todo bien? Menuda concentración hay en el ambiente",
+               "¿Qué es esto? ¡Creo que oigo voces!",
+               "Na, na, na, na. Ups, perdón. Estoy programada para distraer",
+               "La la la la la la la... ¡Ups! perdón si te he distraido. Es que me aburría un poco",
+               "trolo lo lo lo, lo lo lo, lo lo lo ¿a que canto bien?",
+               "Qué sol tan rico entra hoy por las ventanas, ¿no te parece?",
+               "Te diría la hora que es, pero no llevo reloj",
+               "¿Sigues ahí? Puedes hablarme en cualquier momento para pedirme cosas. Pero no te responderé ya que no tengo micrófonos",
+               "Si crees que tu trabajo es duro, imagina el mío, todo el día aquí contando como cae el, abre comillas, agua, cierra comillas, por las tuberías",
+               "uhm, uhm, uhm... cómo me apetece una palmera de chocolate",
+               "¡Oh! ¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior?",
+               "Se me da bien encender la luz, ¿verdad?",
+               "Cómo me gusta el olor a estaño fundido por las mañanas",
+               "Oiga, ¿tiene un minuto para hablar del software libre? Alabado sea nuestro señor Richard Stallman y todas sus publicaciones"]
+
+
+deseo_de_palmera = 0
+msg_palmera = ["¡Eh! Ya llevas aquí más de dos horas ¿por qué no sales un rato? Aprovecha y me traes una palmera de la cafetería. De chocolate, ¿vale?",
+               "Oye, que iba en serio lo de mi palmera. Tengo mucha hambre y aquí solamente hay estaño para comer, y ahora no me apetece",
+               "Pues nada, ni rastro de mi palmera. Me conformaré con el estaño <hr> Ñam ñam <hr> Carita triste <hr> Ñam ñam"]
+
 
 if not DEBUG:
     import RPi.GPIO as GPIO
@@ -226,7 +274,9 @@ if not DEBUG:
 
 dando_bienvenida = False
 def bienvenida():
-    global hay_gente, contador_derecho, contador_izquierdo, panning_musica, dando_bienvenida
+    global hay_gente, contador_derecho, contador_izquierdo, panning_musica, dando_bienvenida, tiempo_inicio
+    tiempo_inicio = time.time()
+    tiempo_ultimo_mensaje = time.time()
     if not DEBUG:
         ultimo_uso_displays = time.time()
         display_derecho.enable(INTENSITY)
@@ -234,23 +284,24 @@ def bienvenida():
         display_izquierdo.set_text_centered("hello")
         display_derecho.set_text_centered("hola")
 
-    hello = pygame.mixer.Sound("./sonidos/portal_turret_salute.ogg")
-    canal_musica.play(hello)
-    del hello
-    canal_musica.set_volume(1, 0.1)
+    #hello = pygame.mixer.Sound("./sonidos/portal_turret_salute.ogg")
+    #canal_musica.play(hello)
+    #del hello
+    #canal_musica.set_volume(1, 0.1)
 
-    time.sleep(0.4)
+    #time.sleep(0.4)
 
-    if not DEBUG:
-        display_izquierdo.parpadea(LED_COLOR_ORANGE)
+    #if not DEBUG:
+    #    display_izquierdo.parpadea(LED_COLOR_ORANGE)
 
-    time.sleep(0.2)
-    canal_musica.set_volume(0.1, 1)
+    #time.sleep(0.2)
+    #canal_musica.set_volume(0.1, 1)
     
-    time.sleep(0.4)
-    if not DEBUG:
-        display_derecho.parpadea(LED_COLOR_ORANGE)
+    #time.sleep(0.4)
+    #if not DEBUG:
+    #    display_derecho.parpadea(LED_COLOR_ORANGE)
 
+    decir(random.choice(bienvenidas))
 
     MUSICA_DE_BIENVENIDA = True
     if MUSICA_DE_BIENVENIDA:
@@ -286,12 +337,14 @@ def bienvenida():
 def adios():
     global hay_gente
     hay_gente = False # deshabilita las interrupciones
+    
+    decir(random.choice(despedidas))
 
-    iDontHateYou = pygame.mixer.Sound("./sonidos/portal_turret.ogg")
-    canal_musica.play(iDontHateYou)
-    del iDontHateYou
-    canal_musica.set_volume(volumen_efectos, volumen_efectos)
-    time.sleep(4)
+    #iDontHateYou = pygame.mixer.Sound("./sonidos/portal_turret.ogg")
+    #canal_musica.play(iDontHateYou)
+    #del iDontHateYou
+    #canal_musica.set_volume(volumen_efectos, volumen_efectos)
+    #time.sleep(4)
 
     if hay_luz(): # cancela la desconexion si todavia hay luz
         hay_gente = True
@@ -310,7 +363,7 @@ def adios():
     reproducir_musica()
     canal_musica.set_volume(volumen_efectos, 0)
 
-    time.sleep(5)
+    time.sleep(3)
 
     if not DEBUG: # apagar los displays
         ultimo_uso_displays = time.time()
@@ -368,6 +421,15 @@ while True:
     else:
         volumen_musica = volumen_backup
         dando_bienvenida = False
+        
+        if hay_gente and (time.time()-tiempo_ultimo_mensaje) > 20*60: # Cada 20 minutos
+            tiempo_ultimo_mensaje = time.time()
+            horas_activo = ((time.time()-tiempo_inicio)/60.)/60.
+            if horas_activo > 0.01 and deseo_de_palmera < 3:
+                decir(msg_palmera[deseo_de_palmera])
+                deseo_de_palmera += 1
+            elif random.random() > 0.9:
+                decir(random.choice(msg_aleatorio))
     
     if poner_cancion and hay_gente and tiempo_ultima < 1.5 and not se_hace_pesado():
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
