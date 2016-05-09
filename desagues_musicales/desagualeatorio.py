@@ -153,7 +153,7 @@ def reproducir_musica():
     canal_musica.play(musica)
 
 last_time = time.time()
-tiempo_ultima_cancion = last_time
+tiempo_ultima_cancion = 0
 
 def se_hace_pesado():
     return (time.time()-tiempo_ultima_cancion) < 60*10 # deshabilitar los efectos durante unos minutos tras una reproduccion larga
