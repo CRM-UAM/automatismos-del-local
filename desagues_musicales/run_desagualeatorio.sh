@@ -8,7 +8,7 @@ if [ "${RESULT:-null}" = null ]; then
     while true
     do
       # Volumen de reproduccion al valor deseado (maximo: 100%)
-      amixer set PCM 95%
+      amixer set PCM 98%
       cd "$HOME/Codigos/automatismos-del-local/desagues_musicales"
       python desagualeatorio.py
       sleep 1

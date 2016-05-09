@@ -31,8 +31,8 @@ if not DEBUG:
 
 
 
-volumen_efectos = 0.9
-volumen_musica = 0.9
+volumen_efectos = 1
+volumen_musica = 1
 
 PIN_MIC_DERECHA = 23
 PIN_MIC_IZQUIERDA = 24
@@ -67,7 +67,7 @@ print("Cargando sonidos en memoria...")
 sonidos = []
 N = len(lista_sonidos)
 i = 0
-for fichero in lista_sonidos:#[1:10]:
+for fichero in lista_sonidos[1:10]:
     sonidos.append(pygame.mixer.Sound(fichero))
     progreso = float(i)/float(N-1)
     N_leds = int(progreso * 16)
@@ -129,7 +129,7 @@ def sht_detected(io):
             return
         last_time = tiempo
         poner_cancion = True
-        if not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5 or not se_hace_pesado():
+        if (not reproduciendo(canal_musica) or panning_musica_filtrado >= 0.5) and not se_hace_pesado():
             panning_musica = 0.05
             if not reproduciendo(canal_derecho):
                     sound = random.choice(sonidos)
@@ -145,7 +145,7 @@ def sht_detected(io):
             return
         last_time = tiempo
         poner_cancion = True
-        if not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5 or not se_hace_pesado():
+        if (not reproduciendo(canal_musica) or panning_musica_filtrado <= 0.5) and not se_hace_pesado():
             panning_musica = 0.95
             if not reproduciendo(canal_izquierdo):
                 sound = random.choice(sonidos)
