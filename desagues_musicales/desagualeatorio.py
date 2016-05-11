@@ -18,42 +18,44 @@ def decir(texto):
 tiempo_inicio = time.time()
 tiempo_ultimo_mensaje = time.time()
 
-bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Robótica y Mecatrónica!",
-               "¡Hola! ¡Bienvenidos al Club de Mecatrónica! Digo Robótica. Y mecatrónica también. Ay, por un trabajo que tengo, y haciéndolo mal ¡Menuda presentación! Lo solucionaré poniendo música",
-               "Bienvenidos al Club de Robótica <hr> ¡Música maestro!",
+bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Mecatrónica! Digo Club de Robótica. Y mecatrónica también. Ay, por un trabajo que tengo, y haciéndolo mal ¡Menuda presentación! <hr/> lo solucionaré poniendo música",
+               "Bienvenida a las instalaciones de Aperchur Saiens <hr/> ¡Ah no!, perdón, quería decir ¡bienvenidos al Club de Robótica!",
+               "¡Hola! ¡Bienvenidos al Club de Robótica y Mecatrónica!",
+               "Bienvenidos al Club de Robótica <hr/> ¡Música maestro!",
                "Hola, ¿Qué tal va todo? ¡Bienvenidos al Club de Robótica!",
                "Hola, cómo molas, te mereces una ola, uueeaaoo, ooaaeeuu ¡Bienvenido al Club de Robótica!",
-               "Hola ke ase. Ke te trae, entre mano mi shurmano <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!",
-               "¡Eh! Cierra la puerta, que se escapa el gato <hr> Es broma jajaja, ¡Bienvenidos al Club de Robótica!"]
+               "Hola ke ase. Ke te trae entre mano mi surmano <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
+               "¡Oh! ¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior? ¡Bienvenidos al Club de Robótica!",
+               "¡Eh! Cierrra la puerta, que se nos escapa el gato <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!"]
 
-despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr> <hr> <hr> ¡Hasta pronto!",
-               "¿Ya te vas? Si te ha gustado, dale a laik, fav y suscribete",
+despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr/> <hr/> <hr/> <hr/> <hr/> ¡Hasta pronto!",
+               "¿Ya te vas? Si te ha gustado, dale a laik, fav, y suscríbete",
                "¿Ya te vas? Bueno, ya sabes que tu casa es mi casa, digo, tu casa. Bah, ¡es igual!",
-               "¡Hasta pronto! Puedes volver cuando puedas, o quieras, o quieras y puedas, o cuando te salga del .",
-               "¡Nos vemos en el futuro! para tu desgracia, digo, para bien, será para bien",
-               "¡Espera! ¡No te vayas todavía! <hr> <hr> <hr> Era broma. Guiño, guiño. ¡Que vaya bien!"]
+               "Por su propia seguridad y la de los demás, procure no tocar nada <hr/> Quiero decir, !hasta pronto!",
+               "¡Hasta pronto! Puedes volver cuando puedas, o cuando quieras, o quieras y puedas, o cuando te salga del .",
+               "¡Nos vemos en el futuro, para tu desgracia! digo... para bien, será para bien",
+               "¡Espera! ¡No te vayas todavía! <hr/> <hr/> <hr/> Era broma. Guiño, guiño. ¡Que te vaya muy bien todo!"]
 
-msg_aleatorio = ["¿Qué tal va todo? ¿Puedo echarte una mano? <hr> Es broma, no tengo manos, tendrás que solucionarlo por tu cuenta. Pero te puedo dar ánimos. <hr> Ánimo! <hr> Tú puedes!",
+msg_aleatorio = ["¿Qué tal va todo? ¿Puedo echarte una mano? <hr/> Es broma, no tengo manos, tendrás que solucionar lo tuyo por tu cuenta. Pero te puedo dar ánimos. <hr/> Ánimo! <hr/> Tú puedes! <hr/> Ya casi lo tienes!",
                "¿Todo bien? Menuda concentración hay en el ambiente",
-               "¿Qué es esto? ¡Creo que oigo voces!",
-               "Na, na, na, na. Ups, perdón. Estoy programada para distraer",
-               "La la la la la la la... ¡Ups! perdón si te he distraido. Es que me aburría un poco",
-               "trolo lo lo lo, lo lo lo, lo lo lo ¿a que canto bien?",
-               "Qué sol tan rico entra hoy por las ventanas, ¿no te parece?",
+               "¡Oh! <hr/> ¿Qué es esto? ¡Creo que oigo voces!",
+               "Na, na, na, na, na. Ups, perdón. Estoy programada para distraer",
+               "La, la, la, la, la, la, la... ¡Ups! perdón si te he distraído. Es que me aburrría un poquito",
+               "trolo, trolo lo lo lo, lo lo lo, lo lo lo ¿a que canto bien? Casi casi mejor que Nino Bravo",
+               "Increíble <hr/> ¡qué manera de trabajar! usted, insertar nombre de sujeto, debe ser famoso en, insertar nombre de ciudad",
+               "Menudo sol más agradable entra hoy por las ventanas, ¿no te parece? je je je",
                "Te diría la hora que es, pero no llevo reloj",
-               "¿Sigues ahí? Puedes hablarme en cualquier momento para pedirme cosas. Pero no te responderé ya que no tengo micrófonos",
-               "Si crees que tu trabajo es duro, imagina el mío, todo el día aquí contando como cae el, abre comillas, agua, cierra comillas, por las tuberías",
-               "uhm, uhm, uhm... cómo me apetece una palmera de chocolate",
-               "¡Oh! ¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior?",
-               "Se me da bien encender la luz, ¿verdad?",
-               "Cómo me gusta el olor a estaño fundido por las mañanas",
-               "Oiga, ¿tiene un minuto para hablar del software libre? Alabado sea nuestro señor Richard Stallman y todas sus publicaciones"]
+               "¿Sigues ahí? Puedes hablarme en cualquier momento para pedirme cosas <hr/> Pero no te responderé ya que no tengo micrófonos, ja ja ja",
+               "Si crees que tu trabajo es duro, imagina el mío, todo el día aquí contando como cae por las tuberías el, abre comillas, agua, cierrra comillas",
+               "Jo, cómo me apetece ahora una palmera de chocolate",
+               "¡Cómo me gusta el olor a estaño fundido por las mañanas! O por las tardes <hr/> Vaya, me has pillado, no sé ni qué hora es, ja ja ja",
+               "!Oiga! ¿tiene un minuto para hablar del software libre? <hr/> Alabado sea nuestro señor Richard Stallman y todas sus publicaciones"]
 
 
 deseo_de_palmera = 0
-msg_palmera = ["¡Eh! Ya llevas aquí más de dos horas ¿por qué no sales un rato? Aprovecha y me traes una palmera de la cafetería. De chocolate, ¿vale?",
-               "Oye, que iba en serio lo de mi palmera. Tengo mucha hambre y aquí solamente hay estaño para comer, y ahora no me apetece",
-               "Pues nada, ni rastro de mi palmera. Me conformaré con el estaño <hr> Ñam ñam <hr> Carita triste <hr> Ñam ñam"]
+msg_palmera = ["¡Hola! <hr/> ¡Eh! <hr/> Que ya llevas aquí más de dos horas ¿por qué no sales a pasear? <hr/> Aprovecha y me traes una palmera de la cafetería. De chocolate, ¿vale?",
+               "Oye, que iba en serio lo de mi palmera. <hr/> Tengo mucha hambre y aquí solamente hay estaño para comer, y ahora no me apetece. <hr/> Venga, tráeme una palmera, ¡por favor!",
+               "Pues nada, GRACIAS, me olvido de mi palmera. Me conformaré con el estaño <hr/> Ñam ñam <hr/> Carita triste <hr/> Ñam ñam"]
 
 
 if not DEBUG:
