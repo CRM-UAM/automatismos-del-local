@@ -13,7 +13,7 @@ random.seed()
 
 def decir(texto):
   subprocess.check_output(['./voz_de_glados.sh', str(texto)])
-  
+
 
 tiempo_inicio = time.time()
 tiempo_ultimo_mensaje = time.time()
@@ -26,7 +26,8 @@ bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Mecatrónica! Digo Club de Rob�
                "Hola, cómo molas, te mereces una ola, uueeaaoo, ooaaeeuu ¡Bienvenido al Club de Robótica!",
                "Hola ke ase. Ke te trae entre mano mi surmano <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
                "¡Oh! ¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior? ¡Bienvenidos al Club de Robótica!",
-               "¡Eh! Cierrra la puerta, que se nos escapa el gato <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!"]
+               "¡Eh! Cierrra la puerta, que se nos escapa el gato <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
+               "¡Hola! <hr/> Oye, una preguntita <hr/> ¿Tú recuerdas cuál es la primera ley de la robótica? ¿Algo de matar humanos? <hr/> No es que la haya olvidado <hr/> Es para un amigo. <hr/> Es broma ja ja ja, ¡bienvenido al Club de Robótica!"]
 
 despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr/> <hr/> <hr/> <hr/> <hr/> ¡Hasta pronto!",
                "¿Ya te vas? Si te ha gustado, dale a laik, fav, y suscríbete",
@@ -49,7 +50,8 @@ msg_aleatorio = ["¿Qué tal va todo? ¿Puedo echarte una mano? <hr/> Es broma, 
                "Si crees que tu trabajo es duro, imagina el mío, todo el día aquí contando como cae por las tuberías el, abre comillas, agua, cierrra comillas",
                "Jo, cómo me apetece ahora una palmera de chocolate",
                "¡Cómo me gusta el olor a estaño fundido por las mañanas! O por las tardes <hr/> Vaya, me has pillado, no sé ni qué hora es, ja ja ja",
-               "!Oiga! ¿tiene un minuto para hablar del software libre? <hr/> Alabado sea nuestro señor Richard Stallman y todas sus publicaciones"]
+               "!Oiga! ¿tiene un minuto para hablar del software libre? <hr/> Alabado sea nuestro señor Richard Stallman y todas sus publicaciones",
+               "Psch. Ey, tú. <hr/> Sí, tú. ¿Qué quieres a cambio de construirme unas piernas? Seguro que podemos llegar a un acuerdo."]
 
 
 deseo_de_palmera = 0
@@ -299,7 +301,7 @@ def bienvenida():
 
     #time.sleep(0.2)
     #canal_musica.set_volume(0.1, 1)
-    
+
     #time.sleep(0.4)
     #if not DEBUG:
     #    display_derecho.parpadea(LED_COLOR_ORANGE)
@@ -340,7 +342,7 @@ def bienvenida():
 def adios():
     global hay_gente
     hay_gente = False # deshabilita las interrupciones
-    
+
     if reproduciendo(canal_musica): canal_musica.stop()
     decir(random.choice(despedidas))
 
@@ -409,15 +411,15 @@ while True:
             adios()
         if pulsado_boton_mute():
             volumen_musica = 0
-    
+
     set_panning_musica(filtrado = True)
     time.sleep(0.1)
-    
+
     tiempo_ultima = segundos_desde_ultima_deteccion()
     if tiempo_ultima > 10 and not dando_bienvenida: # auto-mute si no se detecta nada en X segundos
         volumen_musica = 0
         poner_cancion = False
-    
+
     if reproduciendo(canal_musica):
         poner_cancion = False
         if volumen_musica_filtrado < 0.01:
@@ -425,7 +427,7 @@ while True:
     else:
         volumen_musica = volumen_backup
         dando_bienvenida = False
-        
+
         if hay_gente and (time.time()-tiempo_ultimo_mensaje) > 20*60: # Cada 20 minutos
             tiempo_ultimo_mensaje = time.time()
             horas_activo = ((time.time()-tiempo_inicio)/60.)/60.
@@ -434,7 +436,7 @@ while True:
                 deseo_de_palmera += 1
             elif random.random() > 0.9:
                 decir(random.choice(msg_aleatorio))
-    
+
     if poner_cancion and hay_gente and tiempo_ultima < 1.5 and not se_hace_pesado():
         if not (reproduciendo(canal_izquierdo) or reproduciendo(canal_derecho)):
             tiempo_ultima_cancion = time.time()
@@ -446,4 +448,3 @@ while True:
 
 if not DEBUG:
     GPIO.cleanup()
-
