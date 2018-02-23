@@ -260,7 +260,7 @@ def hay_luz(): # TO-DO: incorporar sensor de luz
     if DEBUG: return False
     medida = RCtime(PIN_SENSOR_LUZ)
     #print medida
-    if medida < 700:
+    if medida < 1000:
         return True
     else:
         return False
