@@ -18,16 +18,16 @@ def decir(texto):
 tiempo_inicio = time.time()
 tiempo_ultimo_mensaje = time.time()
 
-bienvenidas = ["¡Hola! ¡Bienvenidos al Club de Mecatrónica! Digo Club de Robótica. Y mecatrónica también. Ay, por un trabajo que tengo, y haciéndolo mal ¡Menuda presentación! <hr/> lo solucionaré poniendo música",
+bienvenidas = ["¡Bienvenidos al Club de Mecatrónica! Digo Club de Robótica. Y mecatrónica también. Ay, por un trabajo que tengo, y haciéndolo mal ¡Menuda presentación! <hr/> lo solucionaré poniendo música",
                "Bienvenida a las instalaciones de Aperchur Saiens <hr/> ¡Ah no!, perdón, quería decir ¡bienvenidos al Club de Robótica!",
-               "¡Hola! ¡Bienvenidos al Club de Robótica y Mecatrónica!",
+               "¡Bienvenidos al Club de Robótica y Mecatrónica!",
                "Bienvenidos al Club de Robótica <hr/> ¡Música maestro!",
-               "Hola, ¿Qué tal va todo? ¡Bienvenidos al Club de Robótica!",
-               "Hola, cómo molas, te mereces una ola, uueeaaoo, ooaaeeuu ¡Bienvenido al Club de Robótica!",
-               "Hola ke ase. Ke te trae entre mano mi surmano <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
-               "¡Oh! ¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior? ¡Bienvenidos al Club de Robótica!",
+               "¿Qué tal va todo? ¡Bienvenidos al Club de Robótica!",
+               "Cómo molas, te mereces una ola, uueeaaoo, ooaaeeuu ¡Bienvenido al Club de Robótica!",
+               "ke ase? Ke te trae entre mano mi surmano <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
+               "¡Cuanto tiempo! ¿Qué tal va todo por el mundo exterior? ¡Bienvenidos al Club de Robótica!",
                "¡Eh! Cierrra la puerta, que se nos escapa el gato <hr/> Es broma ja ja ja, ¡Bienvenido al Club de Robótica!",
-               "¡Hola! <hr/> Oye, una preguntita <hr/> ¿Tú recuerdas cuál es la primera ley de la robótica? ¿Algo de matar humanos? <hr/> No es que la haya olvidado <hr/> Es para un amigo. <hr/> Es broma ja ja ja, ¡bienvenido al Club de Robótica!"]
+               "Oye, una preguntita <hr/> ¿Tú recuerdas cuál es la primera ley de la robótica? ¿Algo de matar humanos? <hr/> No es que la haya olvidado <hr/> Es para un amigo. <hr/> Es broma ja ja ja, ¡bienvenido al Club de Robótica!"]
 
 despedidas  = ["¿Ya te vas? Espera, que te apago la luz <hr/> <hr/> <hr/> <hr/> <hr/> ¡Hasta pronto!",
                "¿Ya te vas? Si te ha gustado, dale a laik, fav, y suscríbete",
